@@ -12,8 +12,12 @@ router.post("/api/transaction", ({body}, res) => {
 });
 
 router.post("/api/transaction/bulk", ({body}, res) => {
+  console.log('*******')
+  console.log(body)
   Transaction.insertMany(body)
     .then(dbTransaction => {
+      console.log('!!!!!!')
+      console.log(dbTransaction);
       res.json(dbTransaction);
     })
     .catch(err => {

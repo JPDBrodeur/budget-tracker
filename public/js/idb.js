@@ -1,6 +1,13 @@
 // variable to hold db connection
 let db;
 
+const indexedDB =
+  window.indexedDB ||
+  window.mozIndexedDB ||
+  window.webkitIndexedDB ||
+  window.msIndexedDB ||
+  window.shimIndexedDB;
+
 // connection to IndexedDB database 'budget_tracker' version 1
 const request = indexedDB.open('budget_tracker', 1);
 
@@ -46,16 +53,19 @@ function uploadTransactions() {
 
   getAll.onsuccess = function() {
     if (getAll.result.length > 0) {
-      fetch('/api/transaction', {
+      fetch('/api/transaction/bulk', {
         method: 'POST',
         body: JSON.stringify(getAll.result),
         headers: {
           Accept: 'application/json, text/plain, */*',
-          'Content-Type': 'application/json/'
+          'Content-Type': 'application/json'
         }
       })
-        .then(response => response.json())
+        .then(response => {
+          return response.json();
+        })
         .then(serverResponse => {
+          console.log(serverResponse);
           if (serverResponse.message) {
             throw new Error(serverResponse);
           }
